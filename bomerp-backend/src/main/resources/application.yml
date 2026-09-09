@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: portal-estudiantil-backend
+  profiles:
+    active: dev

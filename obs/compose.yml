@@ -1,0 +1,47 @@
+# PLACEHOLDER: requiere el PROD real de bomerp-backend (todavia no existe
+# en este workspace - solo hay compose-dev.yml, ver bomerp-backend/).
+# La red externa "bomerp-prod-net" debe crearla ese PROD (igual que
+# "pagatu-prod-net" la crea infra/compose.yml de DIST) - sin esa pieza,
+# "docker compose -f compose.yml up" falla con la red no encontrada.
+# No ejecutar hasta que exista esa sesion. Mismo criterio de "no crear
+# por si acaso" que S01_01_esquemas.sql aplica a BOM_VENTAS (ADR-002).
+
+name: bomerp-obs-prod
+
+services:
+  bomerp-prometheus:
+    image: prom/prometheus:v3.14.0
+    container_name: bomerp-prometheus
+    restart: unless-stopped
+    ports:
+      - "49090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - bomerp-prod-net
+
+  bomerp-loki:
+    image: grafana/loki:3.7.6
+    container_name: bomerp-loki
+    restart: unless-stopped
+    ports:
+      - "43100:3100"
+    networks:
+      - bomerp-prod-net
+
+  bomerp-promtail:
+    image: grafana/promtail:3.6.8
+    container_name: bomerp-promtail
+    restart: unless-stopped
+    volumes:
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - ../bomerp-backend/logs:/var/log/bomerp-backend:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - bomerp-loki
+    networks:
+      - bomerp-prod-net
+
+networks:
+  bomerp-prod-net:
+    external: true

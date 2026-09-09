@@ -1,0 +1,14 @@
+# PLACEHOLDER: asume un contenedor "bomerp-backend" en la misma red
+# bomerp-prod-net (todavia no existe). Ajustar el target cuando ese
+# PROD se construya - puede no llamarse asi, o requerir varias
+# instancias (en cuyo caso, revisar si aplica eureka_sd_configs u
+# otro descubrimiento en vez de un target fijo).
+
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "bomerp-backend"
+    static_configs:
+      - targets: ["bomerp-backend:8080"]
+    metrics_path: "/actuator/prometheus"

@@ -1,0 +1,45 @@
+name: bomerp-obs-dev
+
+services:
+  bomerp-prometheus:
+    image: prom/prometheus:v3.14.0
+    container_name: bomerp-prometheus-dev
+    restart: unless-stopped
+    ports:
+      - "39090:9090"
+    volumes:
+      - ./prometheus/prometheus-dev.yml:/etc/prometheus/prometheus.yml:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  bomerp-loki:
+    image: grafana/loki:3.7.6
+    container_name: bomerp-loki-dev
+    restart: unless-stopped
+    ports:
+      - "33100:3100"
+
+  bomerp-promtail:
+    image: grafana/promtail:3.6.8
+    container_name: bomerp-promtail-dev
+    restart: unless-stopped
+    volumes:
+      - ./promtail/promtail-config-dev.yml:/etc/promtail/config.yml:ro
+      - ../bomerp-backend/logs:/var/log/bomerp-backend:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - bomerp-loki
+
+  bomerp-grafana:
+    image: grafana/grafana:11.4.0
+    container_name: bomerp-grafana-dev
+    restart: unless-stopped
+    ports:
+      - "33000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - bomerp-prometheus
+      - bomerp-loki

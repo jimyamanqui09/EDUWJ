@@ -1,0 +1,2 @@
+FROM gvenzl/oracle-free:23-slim
+COPY --chmod=755 src/main/resources/sql/init/*.sql /container-entrypoint-initdb.d/
