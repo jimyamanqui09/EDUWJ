@@ -1,68 +1,117 @@
 # BomerpFrontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+Este proyecto fue generado con [Angular CLI](https://github.com/angular/angular-cli) versión 22.1.8.
 
-## Development server
+## Requisitos previos
 
-To start a local development server, run:
+**Node.js 22.22.3+** (o 24.15.0+ / 26.0.0+). Angular 22 **no funciona** con Node 20.
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Instalar Node.js correcto con nvm (recomendado)
 
 ```bash
-ng generate component component-name
+# Instalar nvm si no lo tienes
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+# Reiniciar terminal o ejecutar:
+source ~/.bashrc
+
+# Instalar y usar Node.js 22 LTS
+nvm install 22
+nvm use 22
+nvm alias default 22
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Verificar versión:
+```bash
+node --version   # debe mostrar v22.x.x
+npm --version
+```
+
+---
+
+## Instalación y ejecución
 
 ```bash
-ng generate --help
+# 1. Instalar dependencias (solo la primera vez o si cambió package.json)
+npm install
+
+# 2. Iniciar servidor de desarrollo
+npm start
 ```
 
-## Building
+La app estará en **http://localhost:4200**. Se recarga automáticamente al cambiar código.
 
-To build the project run:
+---
+
+## Comandos útiles
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm start` | Levanta `ng serve` (desarrollo) |
+| `npm run build` | Compila para producción (`dist/`) |
+| `npm run watch` | Compila en modo watch (desarrollo) |
+| `npm test` | Ejecuta tests unitarios con Vitest |
+
+### Generar componentes/servicios/etc.
+```bash
+npx ng generate component nombre-componente
+npx ng generate service nombre-servicio
+# Ver todos los esquemáticos:
+npx ng generate --help
+```
+
+---
+
+## Build para producción
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Genera `dist/bomerp-frontend/browser/` (HTML/JS/CSS estáticos, listos para deploy). **No se sube `node_modules`**.
 
-### Deploying to production
+### GitHub Pages (ejemplo)
+- Sube solo `dist/bomerp-frontend/browser/`
+- En `environment.ts` apunta la URL del API al backend real (no `localhost`)
+- Si no está en raíz del dominio, usa `--base-href` y copia `index.html` a `404.html` para que el router no falle al recargar
+
+---
+
+## Estructura principal
+
+```
+src/
+├── app/
+│   ├── core/           # Servicios, interceptores, layout, inicio
+│   ├── features/       # Módulos de negocio (catálogo, ventas, etc.)
+│   ├── app.routes.ts   # Rutas principales
+│   └── app.config.ts   # Configuración de la app (providers, etc.)
+├── environments/       # environment.ts (desarrollo)
+└── main.ts             # Bootstrap
+```
+
+---
+
+## Tests
 
 ```bash
-npm install   # creates node_modules locally — never committed, never deployed
-ng build      # generates dist/bomerp-frontend/browser/, already bundled and minified
+# Unitarios (Vitest)
+npm test
 ```
 
-Only `dist/` gets deployed — static HTML/JS/CSS, no `node_modules`. To publish on GitHub Pages, upload **only** `dist/bomerp-frontend/browser/` (a GitHub Actions workflow can run these same two commands on a temporary machine and publish the result automatically on every `push`). Before building for production, point the API URL in `environment.ts` to the real public backend — not `localhost`. If the site doesn't live at the domain root (`user.github.io/repo/`), set `--base-href` accordingly, and copy `dist/bomerp-frontend/browser/index.html` to `404.html` so Angular Router's routes don't 404 on a page reload.
+> Nota: Angular CLI no trae framework e2e por defecto. Se puede agregar Cypress, Playwright, etc. según necesidad.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Notas importantes
 
-```bash
-ng test
-```
+- **Nunca uses `ng` global** (`sudo npm i -g @angular/cli`). Usa `npx ng` o los scripts de `package.json` (`npm start`, `npm run build`, etc.) para que todos usen la misma versión local.
+- **Variables de entorno**: solo `environment.ts` (desarrollo). En producción se reemplaza en el build.
+- **Interceptores**: `trace-id-interceptor.ts` agrega `X-Trace-Id` a cada petición para trazabilidad.
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## Recursos
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Angular CLI Reference](https://angular.dev/tools/cli)
+- [Angular 22 Docs](https://angular.dev/)
+- [RxJS 7.8](https://rxjs.dev/)
