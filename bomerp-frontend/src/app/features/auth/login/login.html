@@ -1,0 +1,52 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>BomERP</h1>
+      <p>Sistema de Gestión Escolar</p>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form">
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <input
+          id="username"
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          required
+          autocomplete="username"
+          placeholder="Ingrese su usuario"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          autocomplete="current-password"
+          placeholder="Ingrese su contraseña"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="!isFormValid() || loading()">
+        @if (loading()) {
+          <span class="spinner"></span> Iniciando sesión...
+        } @else {
+          Iniciar sesión
+        }
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p class="hint">Demo: admin / admin123 | profesor / prof123 | alumno / alumno123</p>
+    </div>
+  </div>
+</div>

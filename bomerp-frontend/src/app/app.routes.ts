@@ -1,36 +1,33 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+  },
+  {
     path: '',
     loadComponent: () => import('./core/layout/layout').then((m) => m.Layout),
+    canActivate: [authGuard],
     children: [
       {
         path: '',
-        loadComponent: () => import('./core/inicio/inicio').then((m) => m.Inicio),
+        redirectTo: 'alumnos',
+        pathMatch: 'full',
       },
       {
-        path: 'catalogo/categorias',
-        loadComponent: () =>
-          import('./features/catalogo/categoria/categoria-list').then((m) => m.CategoriaList),
+        path: 'alumnos',
+        loadComponent: () => import('./features/matricula/alumnos/alumno-list').then((m) => m.AlumnoListComponent),
       },
       {
-        path: 'catalogo/categorias/nueva',
-        loadComponent: () =>
-          import('./features/catalogo/categoria/categoria-form').then((m) => m.CategoriaForm),
+        path: 'notas',
+        loadComponent: () => import('./features/calificaciones/notas/nota-list').then((m) => m.NotaListComponent),
       },
-      {
-        path: 'catalogo/categorias/:id/editar',
-        loadComponent: () =>
-          import('./features/catalogo/categoria/categoria-form').then((m) => m.CategoriaForm),
-      },
-
-      {
-  path: 'card',
-  loadComponent: () =>
-    import('./temp/categoria-card').then((m) => m.CategoriaCard),
-},
-
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
   },
 ];

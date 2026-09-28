@@ -1,0 +1,117 @@
+<div class="modal-overlay" (click)="onCancel()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditing() ? 'Editar Nota' : 'Nueva Nota' }}</h2>
+      <button class="btn-close" (click)="onCancel()" aria-label="Cerrar">×</button>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="onSubmit()" class="modal-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="alumnoId">Alumno <span class="required">*</span></label>
+          <select
+            id="alumnoId"
+            [(ngModel)]="form().alumnoId"
+            name="alumnoId"
+            required
+            class="form-select"
+          >
+            <option [ngValue]="0">Seleccione un alumno</option>
+            @for (alumno of alumnos(); track alumno.id) {
+              <option [value]="alumno.id">{{ getAlumnoNombre(alumno.id) }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fechaRegistro">Fecha Registro <span class="required">*</span></label>
+          <input
+            id="fechaRegistro"
+            type="date"
+            [(ngModel)]="form().fechaRegistro"
+            name="fechaRegistro"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="evaluacion">Evaluación <span class="required">*</span></label>
+          <input
+            id="evaluacion"
+            type="text"
+            [(ngModel)]="form().evaluacion"
+            name="evaluacion"
+            required
+            maxlength="100"
+            placeholder="Ej: Examen Parcial, Tarea 1, Participación"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="valor">Valor (0-20) <span class="required">*</span></label>
+          <input
+            id="valor"
+            type="number"
+            [(ngModel)]="form().valor"
+            name="valor"
+            required
+            min="0"
+            max="20"
+            step="0.5"
+            placeholder="Ej: 15.5"
+          />
+        </div>
+        <div class="form-group">
+          <label for="ponderacion">Ponderación % (0-100) <span class="required">*</span></label>
+          <input
+            id="ponderacion"
+            type="number"
+            [(ngModel)]="form().ponderacion"
+            name="ponderacion"
+            required
+            min="0"
+            max="100"
+            step="1"
+            placeholder="Ej: 30"
+          />
+        </div>
+      </div>
+
+      @if (isEditing()) {
+        <div class="form-row">
+          <div class="form-group">
+            <label for="estado">Estado</label>
+            <select
+              id="estado"
+              [(ngModel)]="form().estado"
+              name="estado"
+              class="form-select"
+            >
+              @for (estado of estados; track estado) {
+                <option [value]="estado">{{ estado }}</option>
+              }
+            </select>
+          </div>
+        </div>
+      }
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner"></span> Guardando...
+          } @else {
+            {{ isEditing() ? 'Actualizar' : 'Registrar' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

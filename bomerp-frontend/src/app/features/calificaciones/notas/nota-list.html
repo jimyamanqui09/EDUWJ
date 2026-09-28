@@ -1,0 +1,108 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Calificaciones - Notas</h1>
+    <button class="btn btn-primary" (click)="nuevaNota()">
+      <span class="icon">+</span> Nueva Nota
+    </button>
+  </div>
+
+  <div class="filters-card">
+    <div class="filters-row">
+      <div class="form-group">
+        <label for="filterAlumno">Alumno</label>
+        <select
+          id="filterAlumno"
+          [(ngModel)]="filterAlumnoId"
+          (ngModelChange)="onFilterChange()"
+          class="form-select"
+        >
+          <option [ngValue]="null">Todos los alumnos</option>
+          @for (alumno of alumnos(); track alumno.id) {
+            <option [value]="alumno.id">{{ alumno.apellidoPaterno }} {{ alumno.apellidoMaterno ?? '' }}, {{ alumno.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="filterEstado">Estado</label>
+        <select
+          id="filterEstado"
+          [(ngModel)]="filterEstado"
+          (ngModelChange)="onFilterChange()"
+          class="form-select"
+        >
+          <option value="">Todos los estados</option>
+          @for (estado of NOTA_ESTADOS; track estado) {
+            <option [value]="estado">{{ estado }}</option>
+          }
+        </select>
+      </div>
+
+      @if (filterAlumnoId() || filterEstado()) {
+        <div class="form-group" style="align-self: flex-end;">
+          <button class="btn btn-secondary" (click)="limpiarFiltros()">Limpiar filtros</button>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="loading">Cargando notas...</div>
+  } @else {
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Alumno</th>
+            <th>Evaluación</th>
+            <th>Valor</th>
+            <th>Ponderación</th>
+            <th>Fecha Registro</th>
+            <th>Estado</th>
+            <th class="actions-col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (nota of notasFiltradas(); track nota.id) {
+            <tr>
+              <td>{{ getAlumnoNombre(nota.alumnoId) }}</td>
+              <td>{{ nota.evaluacion }}</td>
+              <td><strong>{{ nota.valor }}</strong></td>
+              <td>{{ nota.ponderacion }}%</td>
+              <td>{{ nota.fechaRegistro }}</td>
+              <td>
+                <span class="estado-badge" [class]="getEstadoClass(nota.estado)">{{ nota.estado }}</span>
+              </td>
+              <td class="actions-col">
+                @if (nota.estado !== 'CERRADA') {
+                  <button class="btn btn-sm btn-secondary" (click)="editarNota(nota)" title="Editar">✏️</button>
+                  <button class="btn btn-sm btn-danger" (click)="eliminarNota(nota.id)" title="Eliminar">🗑️</button>
+                  <button class="btn btn-sm btn-success" (click)="cerrarActa(nota.id)" title="Cerrar Acta">✅</button>
+                } @else {
+                  <span class="text-muted">Acta cerrada</span>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-state">No hay notas registradas</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (showForm()) {
+    <app-nota-form
+      [nota]="editingNota()"
+      [alumnos]="alumnos()"
+      (close)="onFormClose()"
+      (save)="onFormSave()"
+    />
+  }
+</div>

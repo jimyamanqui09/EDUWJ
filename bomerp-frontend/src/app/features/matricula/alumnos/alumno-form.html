@@ -1,0 +1,117 @@
+<div class="modal-overlay" (click)="onCancel()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditing() ? 'Editar Alumno' : 'Nuevo Alumno' }}</h2>
+      <button class="btn-close" (click)="onCancel()" aria-label="Cerrar">×</button>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="onSubmit()" class="modal-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dni">DNI <span class="required">*</span></label>
+          <input
+            id="dni"
+            type="text"
+            [(ngModel)]="form().dni"
+            name="dni"
+            required
+            maxlength="20"
+            placeholder="12345678"
+          />
+        </div>
+        <div class="form-group">
+          <label for="fechaIngreso">Fecha Ingreso <span class="required">*</span></label>
+          <input
+            id="fechaIngreso"
+            type="date"
+            [(ngModel)]="form().fechaIngreso"
+            name="fechaIngreso"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombres <span class="required">*</span></label>
+          <input
+            id="nombre"
+            type="text"
+            [(ngModel)]="form().nombre"
+            name="nombre"
+            required
+            maxlength="100"
+            placeholder="Juan"
+          />
+        </div>
+        <div class="form-group">
+          <label for="apellidoPaterno">Apellido Paterno <span class="required">*</span></label>
+          <input
+            id="apellidoPaterno"
+            type="text"
+            [(ngModel)]="form().apellidoPaterno"
+            name="apellidoPaterno"
+            required
+            maxlength="50"
+            placeholder="Pérez"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="apellidoMaterno">Apellido Materno</label>
+          <input
+            id="apellidoMaterno"
+            type="text"
+            [(ngModel)]="form().apellidoMaterno"
+            name="apellidoMaterno"
+            maxlength="50"
+            placeholder="García"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="grado">Grado <span class="required">*</span></label>
+          <input
+            id="grado"
+            type="text"
+            [(ngModel)]="form().grado"
+            name="grado"
+            required
+            maxlength="20"
+            placeholder="5to Secundaria"
+          />
+        </div>
+        <div class="form-group">
+          <label for="seccion">Sección</label>
+          <input
+            id="seccion"
+            type="text"
+            [(ngModel)]="form().seccion"
+            name="seccion"
+            maxlength="10"
+            placeholder="A"
+          />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner"></span> Guardando...
+          } @else {
+            {{ isEditing() ? 'Actualizar' : 'Crear' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

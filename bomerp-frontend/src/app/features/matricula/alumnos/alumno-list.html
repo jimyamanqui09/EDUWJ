@@ -1,0 +1,62 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Matrícula - Alumnos</h1>
+    <button class="btn btn-primary" (click)="nuevoAlumno()">
+      <span class="icon">+</span> Nuevo Alumno
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <div class="loading">Cargando alumnos...</div>
+  } @else {
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>DNI</th>
+            <th>Apellidos y Nombres</th>
+            <th>Grado</th>
+            <th>Sección</th>
+            <th>Fecha Ingreso</th>
+            <th class="actions-col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (alumno of alumnosConNombreCompleto(); track alumno.id) {
+            <tr>
+              <td>{{ alumno.dni }}</td>
+              <td>{{ alumno.nombreCompleto }}</td>
+              <td>{{ alumno.grado }}</td>
+              <td>{{ alumno.seccion ?? '-' }}</td>
+              <td>{{ alumno.fechaIngreso }}</td>
+              <td class="actions-col">
+                <button class="btn btn-sm btn-secondary" (click)="editarAlumno(alumno)" title="Editar">
+                  ✏️
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="eliminarAlumno(alumno.id)" title="Eliminar">
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-state">No hay alumnos registrados</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (showForm()) {
+    <app-alumno-form
+      [alumno]="editingAlumno()"
+      (close)="onFormClose()"
+      (save)="onFormSave()"
+    />
+  }
+</div>
