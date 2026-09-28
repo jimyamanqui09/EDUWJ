@@ -11,6 +11,7 @@ services:
       ORACLE_PASSWORD: 123456
       APP_USER: BOMERP_APP
       APP_USER_PASSWORD: 123456
+      POST_START_SCRIPT: init-school-schema.sql
     volumes:
       - oracle-data:/opt/oracle/oradata
     healthcheck:
@@ -19,6 +20,20 @@ services:
       timeout: 5s
       retries: 10
       start_period: 60s
+
+  init-schema:
+    image: gvenzl/oracle-free:23-slim
+    container_name: init-schema
+    depends_on:
+      oracle:
+        condition: service_healthy
+    environment:
+      ORACLE_PASSWORD: 123456
+      APP_USER: BOMERP_APP
+      APP_USER_PASSWORD: 123456
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    restart: "no"
 
 volumes:
   oracle-data:
