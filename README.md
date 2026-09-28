@@ -1,27 +1,65 @@
-# LP2
+# LP2 - Sistema Escolar
 
 Carpeta preparada para artefactos del curso **Lenguaje de Programacion II**.
+Proyecto adaptado para un sistema escolar con 4 módulos (2 transaccionales y 2 no transaccionales).
 
-## Alcance
+## Modulos del Sistema
 
-LP2 continúa el dominio comercial construido en POO y LP1: `Producto`,
-`Categoria–Producto`, `Venta–DetalleVenta` y `Usuario`. El backend es un
-único proyecto Spring Boot organizado por módulos de negocio mediante Spring
-Modulith (ver [`docs/lp2/adr/`](../docs/lp2/adr/)), que también deja
-preparado `Compra–DetalleCompra` como segundo flujo transaccional cuando el
-equipo lo amplíe. En U1 desarrolla el backend REST; en U2 incorpora la SPA y
-la seguridad JWT; en U3 lo optimiza, integra y estabiliza.
+### Modulos Transaccionales ( Escritura e integridad de datos )
 
-## Entregables Previstos
+1. **matricula** - Gestión de alumnos y cursos
+   - Registro de estudiantes con validación de DNI único
+   - Asignación de grado y sección
+   - Operaciones ACID: crear alumno + validar vacante + cronograma
 
-* Backend REST único (Spring Boot + Spring Modulith) con JPA y Oracle.
-* Frontend SPA.
-* DTO, servicios, repositorios y validaciones.
-* Seguridad JWT y control de acceso.
-* Integración, pruebas, optimización y monitoreo.
+2. **calificaciones** - Registro y cierre de notas
+   - Insertar notas con validación rango 0-20
+   - Cálculo de ponderaciones y promedios
+   - Cierre de acta bimestral/trimestral
 
-El proyecto backend vive en [`bomerp-backend/`](bomerp-backend/): ya tiene
-el módulo `catalogo` de S1 (`Categoria`, `Producto`), el paquete
-compartido `exception`/`filter` y `ModularityTests` en verde. Las
-decisiones de arquitectura del workspace están en
-[`docs/lp2/adr/`](../docs/lp2/adr/).
+### Modulos No Transaccionales ( Lectura, consulta y autenticación )
+
+3. **auth** - Autenticación y acceso
+   - Inicio de sesión y verificación de credenciales
+   - Validación de usuario y rol (ADMIN, PROFESOR, ALUMNO)
+   - Operación de solo lectura (SELECT, comparar hash, generar token)
+
+4. **reportes** - Consultas y generación de reportes
+   - Consultas de historial académico
+   - Reportes de notas y asistencia por grado
+   - Vistas y exportación de datos sin modificar base de datos
+
+## Estructura del Proyecto
+
+Backend: Spring Boot 4.0.7 + Spring Modulith 2.0.7
+- Paquete raíz: `pe.edu.upeu.bomerp`
+- Cada módulo sigue la organización: `modulo/recurso/{controller,dto,entity,repository,service,mapper}`
+- MapStruct para mapeo de DTOs
+- Lombok para entidades y constructores
+- ModularityTests: verificación automática de reglas de dependencia
+
+## Estado Actual
+
+- ✅ 4 módulos implementados y funcionando
+- ✅ Compilación exitosa (`./mvnw clean compile`)
+- ✅ ModularityTests pasan (2 tests - reglas de dependencia)
+- ✅ 13 tests en total (7 controller tests + 2 modularity)
+- ✅ Estructura por módulo: `modulo/recurso/{controller,dto,entity,repository,service,mapper}`
+
+## Modulos Existentes (S1-S3)
+
+El proyecto incluye módulos heredados de Sesiones anteriores:
+- `catalogo` (S1): `Categoria`, `Producto` - CRUD completo
+- `ventas` (S3+): `Venta` - Ventas con detalles
+
+Las nuevas adaptaciones escolares son módulos adicionales que complementan el sistema.
+
+## Tecnologías
+
+- Java 21
+- Spring Boot 4.0.7
+- Spring Modulith 2.0.7
+- MapStruct 1.6.3
+- Lombok
+- Oracle JDBC Driver
+- Maven Wrapper (mvnw/mvnw.cmd)
