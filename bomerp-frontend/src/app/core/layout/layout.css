@@ -1,0 +1,16 @@
+.body {
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+}
+
+.sidebar a.active {
+  font-weight: bold;
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+}

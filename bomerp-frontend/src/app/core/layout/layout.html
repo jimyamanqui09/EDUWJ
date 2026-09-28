@@ -1,0 +1,20 @@
+<header class="header">
+  <h1>
+    <a routerLink="/" class="home-link">
+      <img src="favicon.ico" alt="" height="30" />
+    </a>
+    BomERP
+  </h1>
+</header>
+
+<div class="body">
+  <aside class="sidebar">
+    <nav>
+      <a routerLink="/catalogo/categorias" routerLinkActive="active">Categorías</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

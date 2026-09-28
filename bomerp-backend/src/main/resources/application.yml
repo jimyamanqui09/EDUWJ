@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: bomerp-backend
+  profiles:
+    active: dev
